@@ -1,0 +1,20 @@
+{
+	"name": "komicho/laravelSession",
+	"type": "library",
+	"description": "Set session in db by token",
+	"keywords": ["php", "session", "token", "komicho"],
+	"homepage": "https://github.com/komichoLab/laravelSession",
+	"authors": [
+		{
+			"name": "komicho",
+			"email": "komicho1996@gmail.com",
+			"homepage": "https://github.com/komicho",
+			"role": "Developer"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"komicho\\": "/src"
+		}
+	}
+}
