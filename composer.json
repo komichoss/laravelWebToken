@@ -1,5 +1,5 @@
 {
-	"name": "komicho/laravelSession",
+	"name": "komicho/laravelsession",
 	"type": "library",
 	"description": "Set session in db by token",
 	"keywords": ["php", "session", "token", "komicho"],
