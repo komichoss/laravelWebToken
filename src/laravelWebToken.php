@@ -4,7 +4,7 @@ namespace komicho;
 
 use komicho\Models\ModelSession;
 
-class laravelSession
+class laravelWebToken
 {
     public static function add($key, $value)
     {
@@ -13,16 +13,16 @@ class laravelSession
         } else {
             $token = $_COOKIE['sessionToken'];
         }
-        
+
         $exist = ModelSession::exist($token, $key);
         if ( $exist == false ) {
             setcookie('sessionToken', $token, time()+3600, '/');
-            ModelSession::addValue($token, $key, $value);   
+            ModelSession::addValue($token, $key, $value);
         } else {
             ModelSession::updateValue($token, $key, $value);
         }
     }
-    
+
     public static function get($key)
     {
         if(!isset($_COOKIE['sessionToken'])) {
@@ -31,14 +31,14 @@ class laravelSession
             $token = $_COOKIE['sessionToken'];
             setcookie('sessionToken', $token, time()+3600, '/');
         }
-        
+
         $exist = ModelSession::exist($token, $key);
         if ( $exist != false ) {
-            return ModelSession::getValue($token, $key);   
+            return ModelSession::getValue($token, $key);
         }
         return false;
     }
-    
+
     public static function exists($key)
     {
         if(!isset($_COOKIE['sessionToken'])) {
@@ -46,15 +46,15 @@ class laravelSession
         } else {
             $token = $_COOKIE['sessionToken'];
         }
-        
+
         $exist = ModelSession::exist($token, $key);
         if ( $exist != false ) {
-            return true;   
+            return true;
         } else {
             return false;
         }
     }
-    
+
     public static function delete($key)
     {
         if(!isset($_COOKIE['sessionToken'])) {
@@ -62,7 +62,7 @@ class laravelSession
         } else {
             $token = $_COOKIE['sessionToken'];
         }
-        
+
         $exist = ModelSession::exist($token, $key);
         if ( $exist != false ) {
             ModelSession::del($token, $key);
