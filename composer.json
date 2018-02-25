@@ -1,9 +1,9 @@
 {
-	"name": "komicho/laravelsession",
+	"name": "komicho/laravelwebtoken",
 	"type": "library",
 	"description": "Set session in db by token",
 	"keywords": ["php", "session", "token", "komicho"],
-	"homepage": "https://github.com/komichoLab/laravelSession",
+	"homepage": "https://github.com/komichoLab/laravelWebToken",
 	"authors": [
 		{
 			"name": "komicho",
