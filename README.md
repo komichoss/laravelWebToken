@@ -41,6 +41,10 @@ laravelWebToken::add('key', 'value');
 ```php
 laravelWebToken::get('key');
 ```
+#### get Token
+```php
+laravelWebToken::getToken();
+```
 #### exists
 ```php
 laravelWebToken::exists('key');
