@@ -35,7 +35,7 @@ use komicho\laravelWebToken;
 ## functions
 #### add
 ```php
-laravelWebToken::add('key', 'value);
+laravelWebToken::add('key', 'value');
 ```
 #### get
 ```php
