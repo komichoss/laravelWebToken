@@ -28,7 +28,7 @@ class laravelWebToken
             ModelSession::updateValue($token, $key, $value);
         }
     }
-
+    
     public static function get($key)
     {
         if(!isset($_COOKIE[self::$sessionName])) {
@@ -43,17 +43,6 @@ class laravelWebToken
             return ModelSession::getValue($token, $key);
         }
         return false;
-    }
-
-    public static function getToken()
-    {
-        if(!isset($_COOKIE[self::$sessionName])) {
-            $token = self::$makeToken;
-        } else {
-            $token = $_COOKIE[self::$sessionName];
-            setcookie(self::$sessionName, $token, time()+self::$sessionTime, '/');
-        }
-        return $token;
     }
 
     public static function exists($key)
@@ -86,6 +75,34 @@ class laravelWebToken
             setcookie(self::$sessionName, null, -1, '/');
         } else {
             return false;
+        }
+    }
+
+    public static function getToken()
+    {
+        if(!isset($_COOKIE[self::$sessionName])) {
+            $token = self::$makeToken;
+        } else {
+            $token = $_COOKIE[self::$sessionName];
+            setcookie(self::$sessionName, $token, time()+self::$sessionTime, '/');
+        }
+        return $token;
+    }
+    
+    public static function openToken($request, $key)
+    {
+        if ( !$request->has('userToken') ) {
+            return 'NOTFINDUSERTOKEN';
+        }
+        $exist = ModelSession::exist($request->userToken, $key);
+        if ( $exist == false ) {
+            return 'NOTEXISTUSERTOKEN';
+        } else {
+            $value = ModelSession::where([
+                'user_token' => $request->userToken,
+                'session_key' => $key
+            ])->first()->session_value;
+            return $value;
         }
     }
 }

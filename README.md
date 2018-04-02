@@ -41,10 +41,6 @@ laravelWebToken::add('key', 'value');
 ```php
 laravelWebToken::get('key');
 ```
-#### get Token
-```php
-laravelWebToken::getToken();
-```
 #### exists
 ```php
 laravelWebToken::exists('key');
@@ -53,3 +49,16 @@ laravelWebToken::exists('key');
 ```php
 laravelWebToken::delete('key');
 ```
+## Token
+#### get Token
+```php
+laravelWebToken::getToken();
+```
+#### open Token
+```php
+$value = laravelWebToken::openToken($request, 'key');
+```
+get value from token and key
+- value = value from token and key
+- NOTFINDUSERTOKEN = not have `userToken` in body request
+- NOTEXISTUSERTOKEN = It is not you can find `userToken`
