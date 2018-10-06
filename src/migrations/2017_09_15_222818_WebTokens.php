@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Sessions extends Migration
+class WebTokens extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class Sessions extends Migration
      */
     public function up()
     {
-        Schema::create('komicho_sessions', function (Blueprint $table) {
-            $table->increments('session_id');
-            $table->string('user_token');
-            $table->string('session_key');
-            $table->string('session_value');
+        Schema::create('komicho_webtokens', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('token');
+            $table->string('token_key');
+            $table->string('token_value');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class Sessions extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('komicho_sessions');
+        Schema::dropIfExists('komicho_webtokens');
     }
 }

@@ -23,9 +23,19 @@ OR
 ```
 $ php artisan vendor:publish --provider="komicho\Support\ServiceProvider"
 ```
+### Migrate
 you can use migrate
 ```
 $ php artisan migrate:fresh
+```
+
+### How work
+Send the `userToken` header in any request you want to use in `web token`
+#### Example
+```javascript
+$.ajaxSetup({
+    headers: {'userToken': '<userToken>'}
+});
 ```
 
 ### use
@@ -33,32 +43,66 @@ $ php artisan migrate:fresh
 use komicho\laravelWebToken;
 ```
 ## functions
+#### create
+```php
+function(laravelWebToken $token)
+{
+    return $token->create();
+}
+```
+response :-
+```
+9ddcbe82eed026ce8591596703791054
+```
+This is a token value
+
 #### add
 ```php
-laravelWebToken::add('key', 'value');
+function(Request $request, laravelWebToken $token)
+{
+    return $token->id($request)->add('user_id', 1);
+}
 ```
+response :-
+```json
+{
+    "token": "<userToken>",
+    "key": "user_id",
+    "value": 1
+}
+```
+
 #### get
 ```php
-laravelWebToken::get('key');
+function(Request $request, laravelWebToken $token)
+{
+    return $token->id($request)->get('user_id');
+}
 ```
+response :-
+```
+1
+```
+this token value
+
 #### exists
 ```php
-laravelWebToken::exists('key');
+function(Request $request, laravelWebToken $token)
+{
+    return $token->id($request)->exists('user_id');
+}
 ```
+response :-
+```
+true
+```
+This response `true` or `false`
+
 #### delete
 ```php
-laravelWebToken::delete('key');
+function(Request $request, laravelWebToken $token)
+{
+    return $token->id($request)->delete('user_id');
+}
 ```
-## Token
-#### get Token
-```php
-laravelWebToken::getToken();
-```
-#### open Token
-```php
-$value = laravelWebToken::openToken($request, 'key');
-```
-get value from token and key
-- value = value from token and key
-- NOTFINDUSERTOKEN = not have `userToken` in body request
-- NOTEXISTUSERTOKEN = It is not you can find `userToken`
+Nothing in response
