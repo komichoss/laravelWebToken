@@ -23,6 +23,7 @@ OR
 ```
 $ php artisan vendor:publish --provider="komicho\Support\ServiceProvider"
 ```
+### Migrate
 you can use migrate
 ```
 $ php artisan migrate:fresh
@@ -46,9 +47,15 @@ use komicho\laravelWebToken;
 ```php
 function(laravelWebToken $token)
 {
-    $userToken = $token->create();
+    return $token->create();
 }
 ```
+response :-
+```
+9ddcbe82eed026ce8591596703791054
+```
+This is a token value
+
 #### add
 ```php
 function(Request $request, laravelWebToken $token)
@@ -56,6 +63,15 @@ function(Request $request, laravelWebToken $token)
     return $token->id($request)->add('user_id', 1);
 }
 ```
+response :-
+```json
+{
+    "token": "<userToken>",
+    "key": "user_id",
+    "value": 1
+}
+```
+
 #### get
 ```php
 function(Request $request, laravelWebToken $token)
@@ -63,6 +79,12 @@ function(Request $request, laravelWebToken $token)
     return $token->id($request)->get('user_id');
 }
 ```
+response :-
+```
+1
+```
+this token value
+
 #### exists
 ```php
 function(Request $request, laravelWebToken $token)
@@ -70,6 +92,12 @@ function(Request $request, laravelWebToken $token)
     return $token->id($request)->exists('user_id');
 }
 ```
+response :-
+```
+true
+```
+This response `true` or `false`
+
 #### delete
 ```php
 function(Request $request, laravelWebToken $token)
@@ -77,3 +105,4 @@ function(Request $request, laravelWebToken $token)
     return $token->id($request)->delete('user_id');
 }
 ```
+Nothing in response
