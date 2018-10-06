@@ -2,58 +2,73 @@
 
 namespace komicho;
 
-use komicho\Models\ModelSession;
-
-define('MAKETOKEN', md5(uniqid()));
+use Illuminate\Http\Request;
+use komicho\Models\ModelWebToken;
 
 class laravelWebToken
 {
-    private static $makeToken = MAKETOKEN;
-    private static $sessionName = 'komicho_laravelWebToken';
-    private static $sessionTime = 3600;
+    private $makeToken;
+    private $ModelWebToken;
 
-    public static function add($key, $value)
+    public function __construct()
     {
-        if(!isset($_COOKIE[self::$sessionName])) {
-            $token = self::$makeToken;
-        } else {
-            $token = $_COOKIE[self::$sessionName];
-        }
-
-        $exist = ModelSession::exist($token, $key);
-        if ( $exist == false ) {
-            setcookie(self::$sessionName, $token, time()+self::$sessionTime, '/');
-            ModelSession::addValue($token, $key, $value);
-        } else {
-            ModelSession::updateValue($token, $key, $value);
-        }
-    }
-    
-    public static function get($key)
-    {
-        if(!isset($_COOKIE[self::$sessionName])) {
-            $token = self::$makeToken;
-        } else {
-            $token = $_COOKIE[self::$sessionName];
-            setcookie(self::$sessionName, $token, time()+self::$sessionTime, '/');
-        }
-
-        $exist = ModelSession::exist($token, $key);
-        if ( $exist != false ) {
-            return ModelSession::getValue($token, $key);
-        }
-        return false;
+        $this->makeToken = md5(uniqid());
+        $this->ModelWebToken = new ModelWebToken;
     }
 
-    public static function exists($key)
+    public function create()
     {
-        if(!isset($_COOKIE[self::$sessionName])) {
-            $token = self::$makeToken;
-        } else {
-            $token = $_COOKIE[self::$sessionName];
+        header("X-userToken: " . $this->makeToken);
+        return $this->makeToken;
+    }
+
+    public function id(Request $request)
+    {
+        $token = $request->header('userToken');
+        if (empty($token)) {
+            $this->token = false;
+            return $this;
+        } 
+        $this->token = $token;
+        return $this;
+    }
+
+    public function add($key, $value)
+    {
+        if (!$this->token) {
+            return 'Token Not found';
         }
 
-        $exist = ModelSession::exist($token, $key);
+        $token = $this->token;
+        $exist = $this->ModelWebToken->exist($token, $key);
+        if (!$exist) {
+            $this->ModelWebToken->addValue($token, $key, $value);
+        } else {
+            $this->ModelWebToken->updateValue($token, $key, $value);
+        }
+        return [
+            'token' => $token,
+            'key' => $key,
+            'value' => $value
+        ];
+    }
+
+    public function get($key)
+    {
+        if (!$this->token) {
+            return 'Token Not found';
+        }
+
+        return $this->ModelWebToken->getValue($this->token, $key);
+    }
+
+    public function exists($key)
+    {
+        if (!$this->token) {
+            return 'Token Not found';
+        }
+
+        $exist = $this->ModelWebToken->exist($this->token, $key);
         if ( $exist != false ) {
             return true;
         } else {
@@ -61,48 +76,12 @@ class laravelWebToken
         }
     }
 
-    public static function delete($key)
+    public function delete($key)
     {
-        if(!isset($_COOKIE[self::$sessionName])) {
-            $token = self::$makeToken;
-        } else {
-            $token = $_COOKIE[self::$sessionName];
+        if (!$this->token) {
+            return 'Token Not found';
         }
-
-        $exist = ModelSession::exist($token, $key);
-        if ( $exist != false ) {
-            ModelSession::del($token, $key);
-            setcookie(self::$sessionName, null, -1, '/');
-        } else {
-            return false;
-        }
-    }
-
-    public static function getToken()
-    {
-        if(!isset($_COOKIE[self::$sessionName])) {
-            $token = self::$makeToken;
-        } else {
-            $token = $_COOKIE[self::$sessionName];
-            setcookie(self::$sessionName, $token, time()+self::$sessionTime, '/');
-        }
-        return $token;
-    }
-    
-    public static function openToken($request, $key)
-    {
-        if ( !$request->has('userToken') ) {
-            return 'NOTFINDUSERTOKEN';
-        }
-        $exist = ModelSession::exist($request->userToken, $key);
-        if ( $exist == false ) {
-            return 'NOTEXISTUSERTOKEN';
-        } else {
-            $value = ModelSession::where([
-                'user_token' => $request->userToken,
-                'session_key' => $key
-            ])->first()->session_value;
-            return $value;
-        }
+        
+        $this->ModelWebToken->del($this->token, $key);
     }
 }
