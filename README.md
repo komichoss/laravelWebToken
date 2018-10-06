@@ -28,37 +28,52 @@ you can use migrate
 $ php artisan migrate:fresh
 ```
 
+### How work
+Send the `userToken` header in any request you want to use in `web token`
+#### Example
+```javascript
+$.ajaxSetup({
+    headers: {'userToken': '<userToken>'}
+});
+```
+
 ### use
 ```php
 use komicho\laravelWebToken;
 ```
 ## functions
+#### create
+```php
+function(laravelWebToken $token)
+{
+    $userToken = $token->create();
+}
+```
 #### add
 ```php
-laravelWebToken::add('key', 'value');
+function(Request $request, laravelWebToken $token)
+{
+    return $token->id($request)->add('user_id', 1);
+}
 ```
 #### get
 ```php
-laravelWebToken::get('key');
+function(Request $request, laravelWebToken $token)
+{
+    return $token->id($request)->get('user_id');
+}
 ```
 #### exists
 ```php
-laravelWebToken::exists('key');
+function(Request $request, laravelWebToken $token)
+{
+    return $token->id($request)->exists('user_id');
+}
 ```
 #### delete
 ```php
-laravelWebToken::delete('key');
+function(Request $request, laravelWebToken $token)
+{
+    return $token->id($request)->delete('user_id');
+}
 ```
-## Token
-#### get Token
-```php
-laravelWebToken::getToken();
-```
-#### open Token
-```php
-$value = laravelWebToken::openToken($request, 'key');
-```
-get value from token and key
-- value = value from token and key
-- NOTFINDUSERTOKEN = not have `userToken` in body request
-- NOTEXISTUSERTOKEN = It is not you can find `userToken`
